@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Search, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { useLocalStorage } from '@/react/hooks/useLocalStorage';
@@ -24,6 +25,7 @@ export function SearchBar({
   className,
   children,
 }: Props) {
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useDebounce(value, onChange);
 
   function onClear() {
@@ -41,8 +43,8 @@ export function SearchBar({
         className="searchInput"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
-        placeholder={placeholder}
-        aria-label="Search input"
+        placeholder={t(placeholder)}
+        aria-label={t('Search input')}
       />
       {children}
       <Button

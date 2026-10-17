@@ -5,6 +5,7 @@ import { dockerWebhookUrl } from '@/portainer/helpers/webhookHelper';
 import { notifySuccess } from '@/portainer/services/notifications';
 import { truncateLeftRight } from '@/portainer/filters/filters';
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
 import { useWebhooks } from '@/react/portainer/webhooks/useWebhooks';
 import { useCreateWebhook } from '@/react/portainer/webhooks/useCreateWebhook';
 import { useDeleteWebhook } from '@/react/portainer/webhooks/useDeleteWebhook';
@@ -97,6 +98,10 @@ export function WebhookRow({
         }
       );
     }
+  }
+
+  if (isLimitedToBE(FeatureId.CONTAINER_WEBHOOK)) {
+    return null;
   }
 
   return (

@@ -1,5 +1,6 @@
 import { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 import { Icon } from '@@/Icon';
 
@@ -19,6 +20,8 @@ export function TableTitle({
   className,
   id,
 }: PropsWithChildren<Props>) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className={clsx('toolBar flex-col', className)} id={id}>
@@ -30,7 +33,7 @@ export function TableTitle({
               </div>
             )}
 
-            {label}
+            {typeof label === 'string' ? t(label) : label}
           </h2>
           {children}
         </div>

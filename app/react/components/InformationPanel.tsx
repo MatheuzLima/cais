@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PropsWithChildren } from 'react';
 import { X } from 'lucide-react';
 
@@ -18,13 +19,15 @@ export function InformationPanel({
   bodyClassName,
   children,
 }: PropsWithChildren<Props>) {
+  const { t } = useTranslation();
+
   return (
     <Widget className="border-none">
       <WidgetBody className={bodyClassName}>
         <div style={wrapperStyle}>
           {title && (
             <div className="form-section-title">
-              <span>{title}</span>
+              <span>{t(title)}</span>
               {!!onDismiss && (
                 <span className="small" style={{ float: 'right' }}>
                   <Button

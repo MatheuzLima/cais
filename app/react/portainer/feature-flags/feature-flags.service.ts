@@ -31,10 +31,11 @@ export async function init(edition: Edition) {
     [FeatureId.S3_BACKUP_SETTING]: Edition.BE,
     [FeatureId.S3_RESTORE]: Edition.BE,
     [FeatureId.TEAM_MEMBERSHIP]: Edition.BE,
-    [FeatureId.FORCE_REDEPLOYMENT]: Edition.BE,
+    // Cais: implemented by the CE backend
+    [FeatureId.FORCE_REDEPLOYMENT]: Edition.CE,
     [FeatureId.HIDE_AUTO_UPDATE_WINDOW]: Edition.BE,
     [FeatureId.IMAGE_UP_TO_DATE_INDICATOR]: Edition.BE,
-    [FeatureId.STACK_PULL_IMAGE]: Edition.BE,
+    [FeatureId.STACK_PULL_IMAGE]: Edition.CE,
     [FeatureId.STACK_WEBHOOK]: Edition.BE,
     [FeatureId.CONTAINER_WEBHOOK]: Edition.BE,
     [FeatureId.POD_SECURITY_POLICY_CONSTRAINT]: Edition.BE,

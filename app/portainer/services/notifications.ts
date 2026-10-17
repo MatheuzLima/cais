@@ -3,6 +3,7 @@ import toastr from 'toastr';
 import sanitize from 'sanitize-html';
 import { v4 as uuid } from 'uuid';
 
+import i18n from '@/i18n';
 import { get as localStorageGet } from '@/react/hooks/useLocalStorage';
 import { notificationsStore } from '@/react/portainer/notifications/notifications-store';
 import { ToastNotification } from '@/react/portainer/notifications/types';
@@ -32,18 +33,33 @@ toastr.options = {
 </svg></button>`,
 };
 
-export function notifySuccess(title: string, text: string) {
+// titles and messages are English source strings; dynamic values (names, server errors) pass through unchanged
+function tr(text: string) {
+  return text ? i18n.t(text) : text;
+}
+
+export function notifySuccess(englishTitle: string, englishText: string) {
+  const title = tr(englishTitle);
+  const text = tr(englishText);
   saveNotification(title, text, 'success');
   toastr.success(sanitize(_.escape(text)), sanitize(_.escape(title)));
 }
 
-export function notifyWarning(title: string, text: string) {
+export function notifyWarning(englishTitle: string, englishText: string) {
+  const title = tr(englishTitle);
+  const text = tr(englishText);
   saveNotification(title, text, 'warning');
   toastr.warning(sanitize(_.escape(text)), sanitize(title), { timeOut: 6000 });
 }
 
-export function notifyError(title: string, e?: unknown, fallbackText = '') {
-  const msg = pickErrorMsg(e) || fallbackText;
+export function notifyError(
+  englishTitle: string,
+  e?: unknown,
+  fallbackText = ''
+) {
+  const title = tr(englishTitle);
+  const rawMsg = pickErrorMsg(e) || fallbackText;
+  const msg = tr(rawMsg);
   saveNotification(title, msg, 'error');
 
   if (!_.get(e, 'resource.password')) {
@@ -51,7 +67,7 @@ export function notifyError(title: string, e?: unknown, fallbackText = '') {
     console.error(e);
   }
 
-  if (msg !== 'Invalid JWT token') {
+  if (rawMsg !== 'Invalid JWT token') {
     toastr.error(sanitize(_.escape(msg)), sanitize(title), { timeOut: 6000 });
   }
 }

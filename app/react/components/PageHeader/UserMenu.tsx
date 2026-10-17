@@ -7,16 +7,20 @@ import {
 import { UISrefProps, useSref } from '@uirouter/react';
 import clsx from 'clsx';
 import { UserIcon, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { queryClient } from '@/react-tools/react-query';
 import { AutomationTestingProps } from '@/types';
 import { useCurrentUser } from '@/react/hooks/useUser';
+
+import { LanguageSelector } from '@@/LanguageSelector';
 
 import styles from './HeaderTitle.module.css';
 import { ThemeSelector } from './UserMenuThemeSelector';
 
 export function UserMenu() {
   const { user } = useCurrentUser();
+  const { t } = useTranslation();
 
   return (
     <Menu>
@@ -26,7 +30,7 @@ export function UserMenu() {
           styles.menuButton
         )}
         data-cy="userMenu-button"
-        aria-label="User menu toggle"
+        aria-label={t('User menu toggle')}
       >
         <div
           className={clsx(
@@ -44,24 +48,26 @@ export function UserMenu() {
 
       <MenuList
         className={styles.menuList}
-        aria-label="User Menu"
+        aria-label={t('User Menu')}
         data-cy="userMenu"
       >
         <MenuLink
           to="portainer.account"
-          label="My account"
+          label={t('My account')}
           data-cy="userMenu-myAccount"
         />
 
         <MenuLink
           to="portainer.logout"
-          label="Log out"
+          label={t('Log out')}
           data-cy="userMenu-logOut"
         />
 
         <hr className="my-1 border-t border-gray-5 th-highcontrast:border-gray-7 th-dark:border-gray-7" />
 
         <ThemeSelector user={user} />
+
+        <LanguageSelector className="mt-2" />
       </MenuList>
     </Menu>
   );

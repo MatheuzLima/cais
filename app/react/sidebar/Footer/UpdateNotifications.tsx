@@ -1,8 +1,10 @@
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 import { DownloadCloud } from 'lucide-react';
 
 import { useUIState } from '@/react/hooks/useUIState';
 import { useSystemVersion } from '@/react/portainer/system/useSystemVersion';
+import { UPSTREAM_NAME, UPSTREAM_URL } from '@/branding';
 
 import { Icon } from '@@/Icon';
 
@@ -11,6 +13,7 @@ import styles from './UpdateNotifications.module.css';
 export function UpdateNotification() {
   const uiStateStore = useUIState();
   const query = useSystemVersion();
+  const { t } = useTranslation();
 
   if (!query.data || !query.data.UpdateAvailable) {
     return null;
@@ -38,7 +41,11 @@ export function UpdateNotification() {
       <div className={clsx(styles.dismissTitle, 'vertical-center')}>
         <Icon icon={DownloadCloud} mode="primary" size="md" />
         <span className="space-left">
-          New version available {LatestVersion}
+          {/* the version check tracks upstream releases, which this fork can merge */}
+          {t('New {{upstream}} release available: {{version}}', {
+            upstream: UPSTREAM_NAME,
+            version: LatestVersion,
+          })}
         </span>
       </div>
 
@@ -48,15 +55,15 @@ export function UpdateNotification() {
           className={clsx(styles.dismissBtn, 'space-right')}
           onClick={() => onDismiss(LatestVersion)}
         >
-          Dismiss
+          {t('Dismiss')}
         </button>
         <a
           className="hyperlink space-left"
           target="_blank"
-          href={`https://github.com/portainer/portainer/releases/tag/${LatestVersion}`}
+          href={`${UPSTREAM_URL}/releases/tag/${LatestVersion}`}
           rel="noreferrer"
         >
-          See what&apos;s new
+          {t("See what's new")}
         </a>
       </div>
     </div>

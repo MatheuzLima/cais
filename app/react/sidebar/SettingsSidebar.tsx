@@ -1,15 +1,9 @@
-import {
-  Users,
-  Award,
-  Settings,
-  HardDrive,
-  Radio,
-  FileText,
-  Bell,
-} from 'lucide-react';
+import { Users, Award, Settings, HardDrive, Radio, Bell } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { usePublicSettings } from '@/react/portainer/settings/queries';
 import { isBE } from '@/react/portainer/feature-flags/feature-flags.service';
+import { REPOSITORY_URL } from '@/branding';
 
 import { SidebarItem } from './SidebarItem';
 import { SidebarSection } from './SidebarSection';
@@ -26,6 +20,7 @@ export function SettingsSidebar({
   isAdmin,
   isTeamLeader = false,
 }: Props) {
+  const { t } = useTranslation();
   const teamSyncQuery = usePublicSettings<boolean>({
     select: (settings) => settings.TeamSync,
   });
@@ -57,15 +52,6 @@ export function SettingsSidebar({
             isSubMenu
             data-cy="portainerSidebar-teams"
           />
-
-          {isPureAdmin && (
-            <SidebarItem
-              to="portainer.roles"
-              label="Roles"
-              isSubMenu
-              data-cy="portainerSidebar-roles"
-            />
-          )}
         </SidebarParent>
       )}
       {isPureAdmin && (
@@ -122,30 +108,6 @@ export function SettingsSidebar({
               data-cy="portainerSidebar-licenses"
             />
           )}
-
-          <SidebarParent
-            label="Logs"
-            to="portainer.authLogs"
-            icon={FileText}
-            pathOptions={{
-              includePaths: ['portainer.activityLogs'],
-            }}
-            data-cy="k8sSidebar-logs"
-            listId="k8sSidebar-logs"
-          >
-            <SidebarItem
-              label="Authentication"
-              to="portainer.authLogs"
-              isSubMenu
-              data-cy="portainerSidebar-authLogs"
-            />
-            <SidebarItem
-              to="portainer.activityLogs"
-              label="Activity"
-              isSubMenu
-              data-cy="portainerSidebar-activityLogs"
-            />
-          </SidebarParent>
         </>
       )}
       {isBE && !isPureAdmin && isAdmin && (
@@ -211,12 +173,12 @@ export function SettingsSidebar({
 
           <SidebarItem.Wrapper label="Get Help">
             <a
-              href="https://www.portainer.io/resources/get-support"
+              href={`${REPOSITORY_URL}/issues`}
               target="_blank"
               rel="noreferrer"
               className="flex h-8 w-full items-center rounded px-3 text-sm !text-inherit transition-colors duration-200 hover:bg-blue-5/20 hover:!underline focus:no-underline be:hover:bg-gray-5/20 th-dark:hover:bg-gray-true-5/20"
             >
-              Get Help
+              {t('Get Help')}
             </a>
           </SidebarItem.Wrapper>
         </SidebarParent>

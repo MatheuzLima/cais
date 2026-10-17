@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import {
   ChevronsLeft,
@@ -18,6 +19,8 @@ export function SortableListPagerNav({
   totalPages,
   onPageChange,
 }: Props) {
+  const { t } = useTranslation();
+
   if (totalPages <= 1) return null;
 
   const pageNumbers = buildPageNumbers(totalPages, safePage);
@@ -27,14 +30,14 @@ export function SortableListPagerNav({
       <PagerButton
         disabled={safePage === 0}
         onClick={() => onPageChange(0)}
-        title="First page"
+        title={t('First page')}
       >
         <ChevronsLeft className="h-3.5 w-3.5" />
       </PagerButton>
       <PagerButton
         disabled={safePage === 0}
         onClick={() => onPageChange(safePage - 1)}
-        title="Previous page"
+        title={t('Previous page')}
       >
         <ChevronLeft className="h-3.5 w-3.5" />
       </PagerButton>
@@ -56,14 +59,14 @@ export function SortableListPagerNav({
       <PagerButton
         disabled={safePage >= totalPages - 1}
         onClick={() => onPageChange(safePage + 1)}
-        title="Next page"
+        title={t('Next page')}
       >
         <ChevronRight className="h-3.5 w-3.5" />
       </PagerButton>
       <PagerButton
         disabled={safePage >= totalPages - 1}
         onClick={() => onPageChange(totalPages - 1)}
-        title="Last page"
+        title={t('Last page')}
       >
         <ChevronsRight className="h-3.5 w-3.5" />
       </PagerButton>

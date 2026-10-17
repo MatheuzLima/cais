@@ -1,17 +1,20 @@
+import { useTranslation } from 'react-i18next';
+
+import { APP_NAME } from '@/branding';
+
 import { TextTip } from '@@/Tip/TextTip';
 
 export function SetupTokenTextTip() {
+  const { t } = useTranslation();
+
   return (
     <TextTip color="blue">
-      Find this token in the Portainer server logs. See the{' '}
-      <a
-        href="https://docs.portainer.io/faqs/installing/setup-token"
-        target="_blank"
-        rel="noreferrer"
-      >
-        setup token FAQ
-      </a>{' '}
-      for more information.
+      {t(
+        'Find this token in the {{name}} server logs (docker logs <container>).',
+        {
+          name: APP_NAME,
+        }
+      )}
     </TextTip>
   );
 }

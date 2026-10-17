@@ -4,8 +4,6 @@ import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.ser
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
 import { AutomationTestingProps } from '@/types';
 
-import { BEFeatureIndicator } from '@@/BEFeatureIndicator';
-
 import './Switch.css';
 
 import styles from './Switch.module.css';
@@ -56,7 +54,6 @@ export function Switch({
         />
         <span className="slider round before:content-['']" />
       </label>
-      {featureId && limitedToBE && <BEFeatureIndicator featureId={featureId} />}
     </>
   );
 }

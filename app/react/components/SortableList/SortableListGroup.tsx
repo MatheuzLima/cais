@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Fragment, ReactNode } from 'react';
 import clsx from 'clsx';
 
@@ -48,10 +49,11 @@ interface HeaderProps<T> {
 }
 
 function SortableListGroupHeader<T>({ group }: HeaderProps<T>) {
-  const groupName = group.label ? group.label : group.key;
+  const { t } = useTranslation();
+  const groupName = t(group.label ? group.label : group.key);
   const groupIcon = group.icon;
   const count = group.items.length;
-  const groupDescription = group.description;
+  const groupDescription = group.description && t(group.description);
 
   return (
     <div

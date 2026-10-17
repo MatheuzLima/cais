@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { slugify } from 'markdown-to-jsx';
@@ -19,10 +20,14 @@ export function DetailsRow({
   columns,
   ariaLabel,
 }: Props) {
+  const { t } = useTranslation();
+  // aria-label and data-cy keep the English label as a stable selector
   const labelString = typeof label === 'string' ? label : ariaLabel;
   return (
     <tr className={className} aria-label={labelString}>
-      <td className={clsx(colClassName, '!break-normal')}>{label}</td>
+      <td className={clsx(colClassName, '!break-normal')}>
+        {typeof label === 'string' ? t(label) : label}
+      </td>
       <td
         className={colClassName}
         data-cy={`detailsTable-${slugify(labelString || 'unlabelled')}Value`}

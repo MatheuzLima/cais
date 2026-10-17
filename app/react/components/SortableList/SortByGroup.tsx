@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { DropdownMenu, DropdownOption } from '../DropdownMenu/DropdownMenu';
@@ -32,13 +33,15 @@ export function SortByGroup<TSortKey extends string>({
   groupOptions,
   dataCy,
 }: SortByGroupProps<TSortKey>) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center gap-3">
       <span
         className="text-xs font-semibold tracking-wider text-gray-11 th-highcontrast:text-white th-dark:text-white"
         data-cy="sort-by-label"
       >
-        SORT BY:
+        {t('SORT BY:')}
       </span>
       <div
         className={clsx(
@@ -47,7 +50,7 @@ export function SortByGroup<TSortKey extends string>({
           'gap-1 rounded-md p-1 th-highcontrast:border th-highcontrast:border-solid th-highcontrast:border-white'
         )}
         role="group"
-        aria-label="Sort by"
+        aria-label={t('Sort by')}
       >
         {sortOptions.map((option, index) => (
           <SortOptionItem
@@ -107,6 +110,7 @@ function SortOptionItem<TSortKey extends string>({
   groupOptions,
   dataCy,
 }: SortOptionItemProps<TSortKey>) {
+  const { t } = useTranslation();
   const className = clsx(
     baseBtn,
     isActive ? activeBtn : inactiveBtn,
@@ -117,7 +121,7 @@ function SortOptionItem<TSortKey extends string>({
   if (option.grouped) {
     return (
       <DropdownMenu
-        label={option.label}
+        label={t(option.label)}
         options={groupOptions?.[option.key]}
         selected={isActive ? (value.groupValue ?? null) : null}
         onSelect={(selected) => {
@@ -137,8 +141,8 @@ function SortOptionItem<TSortKey extends string>({
 
   const badge = isActive
     ? sortDesc
-      ? option.descendingLabel || 'Desc'
-      : option.ascendingLabel || 'Asc'
+      ? t(option.descendingLabel || 'Desc')
+      : t(option.ascendingLabel || 'Asc')
     : null;
 
   return (
@@ -151,7 +155,7 @@ function SortOptionItem<TSortKey extends string>({
       }}
       data-cy={`${dataCy}-sort-by-${option.key.toLowerCase()}-button`}
     >
-      {option.label}
+      {t(option.label)}
       {badge && (
         <span className="py-0.2 ml-1 rounded-md bg-blue-7 px-1 text-[10px] font-normal text-white">
           {badge}

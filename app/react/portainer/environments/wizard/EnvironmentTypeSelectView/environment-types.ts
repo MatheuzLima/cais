@@ -1,3 +1,4 @@
+import { ENABLE_KUBERNETES } from '@/branding';
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
 import Docker from '@/assets/ico/vendor/docker.svg?c';
 import Podman from '@/assets/ico/vendor/podman.svg?c';
@@ -21,7 +22,7 @@ export interface EnvironmentOption extends BoxSelectorOption<EnvironmentOptionVa
   id: EnvironmentOptionValue;
   value: EnvironmentOptionValue;
 }
-export const existingEnvironmentTypes: EnvironmentOption[] = [
+const allExistingEnvironmentTypes: EnvironmentOption[] = [
   {
     id: 'dockerStandalone',
     value: 'dockerStandalone',
@@ -64,7 +65,7 @@ export const existingEnvironmentTypes: EnvironmentOption[] = [
   },
 ];
 
-export const newEnvironmentTypes: EnvironmentOption[] = [
+const allNewEnvironmentTypes: EnvironmentOption[] = [
   {
     id: 'kubesolo',
     value: 'kubesolo',
@@ -89,9 +90,24 @@ export const newEnvironmentTypes: EnvironmentOption[] = [
 ];
 
 export const environmentTypes: EnvironmentOption[] = [
-  ...existingEnvironmentTypes,
-  ...newEnvironmentTypes,
+  ...allExistingEnvironmentTypes,
+  ...allNewEnvironmentTypes,
 ];
+
+const dockerEnvironmentTypes: EnvironmentOptionValue[] = [
+  'dockerStandalone',
+  'dockerSwarm',
+  'podman',
+];
+
+function isOffered(option: EnvironmentOption) {
+  return ENABLE_KUBERNETES || dockerEnvironmentTypes.includes(option.value);
+}
+
+export const existingEnvironmentTypes =
+  allExistingEnvironmentTypes.filter(isOffered);
+
+export const newEnvironmentTypes = allNewEnvironmentTypes.filter(isOffered);
 
 export const formTitles: Record<EnvironmentOptionValue, string> = {
   dockerStandalone: 'Connect to your Docker Standalone environment',

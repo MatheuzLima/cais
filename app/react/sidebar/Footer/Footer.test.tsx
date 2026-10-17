@@ -33,18 +33,19 @@ describe('Footer', () => {
       vi.spyOn(featureFlags, 'isBE', 'get').mockReturnValue(false);
     });
 
-    test('should render CE footer with copyright symbol', () => {
+    test('should render the app name', () => {
       renderComponent();
 
-      expect(screen.getByText('©')).toBeInTheDocument();
+      expect(screen.getByText('Cais')).toBeInTheDocument();
     });
 
-    test('should render Portainer Community Edition text', () => {
+    test('should credit the upstream project it is based on', () => {
       renderComponent();
 
+      expect(screen.getByText('Based on')).toBeInTheDocument();
       expect(
-        screen.getByText('Portainer Community Edition')
-      ).toBeInTheDocument();
+        screen.getByRole('link', { name: 'Portainer CE' })
+      ).toHaveAttribute('href', 'https://github.com/portainer/portainer');
     });
 
     test('should render UpdateNotification component', () => {
@@ -98,14 +99,10 @@ describe('Footer', () => {
     test('should render all child elements in correct order', () => {
       renderComponent();
 
-      const copyrightSymbol = screen.getByText('©');
-      const editionText = screen.getByText(
-        /Portainer (Community|Business) Edition/
-      );
+      const appName = screen.getByText('Cais');
       const buildInfoButton = screen.getByTestId('build-info-modal-button');
 
-      expect(copyrightSymbol).toBeInTheDocument();
-      expect(editionText).toBeInTheDocument();
+      expect(appName).toBeInTheDocument();
       expect(buildInfoButton).toBeInTheDocument();
     });
   });

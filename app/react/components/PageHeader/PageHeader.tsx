@@ -1,6 +1,7 @@
 import { useRouter } from '@uirouter/react';
 import { PropsWithChildren } from 'react';
 import { RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { dispatchCacheRefreshEvent } from '@/portainer/services/http-request.helper';
 
@@ -38,6 +39,7 @@ export function PageHeader({
   children,
 }: PropsWithChildren<Props>) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -61,7 +63,7 @@ export function PageHeader({
                   onClick={onClickedRefresh}
                   className="m-0 p-0 focus:text-inherit"
                   disabled={loading}
-                  title="Refresh page"
+                  title={t('Refresh page')}
                   data-cy="refresh-page-button"
                 >
                   <RefreshCw className="icon" />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PropsWithChildren, ReactNode } from 'react';
 import clsx from 'clsx';
 
@@ -37,6 +38,8 @@ export function FormControl({
   isLoading = false,
   loadingText = 'Loading...',
 }: PropsWithChildren<Props>) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={clsx(
@@ -50,7 +53,7 @@ export function FormControl({
         htmlFor={inputId}
         className={clsx(sizeClassLabel(size), 'control-label', 'text-left')}
       >
-        {label}
+        {typeof label === 'string' ? t(label) : label}
 
         {required && <span className="text-danger">*</span>}
 

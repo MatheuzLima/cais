@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { baseStackWebhookUrl } from '@/portainer/helpers/webhookHelper';
 import { Authorized, useAuthorizations } from '@/react/hooks/useUser';
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
 import { WebhookSettings } from '@/react/portainer/gitops/AutoUpdateFieldset/WebhookSettings';
 
 import { FormSection } from '@@/form-components/FormSection';
@@ -52,6 +53,10 @@ export function AuthorizedWebhook({
   disabled?: boolean;
   webhookId: string;
 }) {
+  if (isLimitedToBE(FeatureId.STACK_WEBHOOK)) {
+    return null;
+  }
+
   return (
     <FormSection title="Webhooks">
       <SwitchField

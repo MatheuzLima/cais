@@ -2,8 +2,8 @@
 <html lang="en" ng-app="<%= name %>" ng-strict-di>
   <head>
     <meta charset="utf-8" />
-    <title>Portainer</title>
-    <meta name="description" content="" />
+    <title><%= appName %></title>
+    <meta name="description" content="<%= appDescription %>" />
     <meta name="author" content="<%= author %>" />
     <base id="base" />
 
@@ -25,19 +25,19 @@
           <!-- simple box logo -->
           <div class="row">
             <img ng-if="logo" ng-src="{{ logo }}" class="simple-box-logo" />
-            <img ng-if="!logo" src="<%= require('./assets/images/logo_alt.svg') %>" class="simple-box-logo" alt="Portainer" />
+            <img ng-if="!logo" src="<%= require('./assets/images/logo_alt.svg') %>" class="simple-box-logo" alt="<%= appName %>" />
           </div>
 
           <div class="panel panel-default">
             <div class="panel-body">
               <div>
-                <span class="form-section-title">New Portainer installation</span>
+                <span class="form-section-title">New <%= appName %> installation</span>
               </div>
 
               <!-- init admin init timeout notification -->
               <div class="padding-top">
                 <span class="small text-muted">
-                  Your Portainer instance timed out for security purposes. To re-enable your Portainer instance, you will need to restart Portainer.
+                  Your <%= appName %> instance timed out for security purposes. To re-enable your <%= appName %> instance, you will need to restart <%= appName %>.
                 </span>
                 <br /><br />
                 <span class="text-muted small">

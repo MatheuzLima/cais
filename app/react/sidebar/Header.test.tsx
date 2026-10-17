@@ -26,11 +26,11 @@ describe('Header', () => {
   it('should render with default logo when no custom logo provided', () => {
     renderComponent();
 
-    const logo = screen.getByAltText('Logo');
+    const logo = screen.getByAltText('Cais');
     expect(logo).toBeInTheDocument();
     expect(logo).toHaveAttribute(
       'src',
-      expect.stringContaining('portainer_logo-CE.svg')
+      expect.stringContaining('cais-logo-white.svg')
     );
   });
 
@@ -38,7 +38,7 @@ describe('Header', () => {
     const customLogo = 'https://example.com/custom-logo.png';
     renderComponent({ logo: customLogo });
 
-    const logo = screen.getByAltText('Logo');
+    const logo = screen.getByAltText('Cais');
     expect(logo).toBeInTheDocument();
     expect(logo).toHaveAttribute('src', customLogo);
   });
@@ -48,7 +48,7 @@ describe('Header', () => {
     renderComponent({ logo: customLogo });
 
     expect(screen.getByText('Powered by')).toBeInTheDocument();
-    expect(screen.getByText('portainer community')).toBeInTheDocument();
+    expect(screen.getByText('Cais')).toBeInTheDocument();
   });
 
   it('should not show "Powered by" section when no custom logo', () => {
@@ -94,24 +94,24 @@ describe('Header', () => {
   it('should use small logo when sidebar is closed', () => {
     renderComponent({}, { isOpen: false, toggle: vi.fn() });
 
-    const logo = screen.getByAltText('Logo');
+    const logo = screen.getByAltText('Cais');
     expect(logo).toHaveAttribute(
       'src',
-      expect.stringContaining('portainer-p-icon-white.svg')
+      expect.stringContaining('cais-mark.svg')
     );
   });
 
   it('should apply max-height class to logo when sidebar is closed', () => {
     renderComponent({}, { isOpen: false, toggle: vi.fn() });
 
-    const logo = screen.getByAltText('Logo');
+    const logo = screen.getByAltText('Cais');
     expect(logo).toHaveClass('!max-h-[27px]');
   });
 
   it('should not apply max-height class to logo when sidebar is open', () => {
     renderComponent();
 
-    const logo = screen.getByAltText('Logo');
+    const logo = screen.getByAltText('Cais');
     expect(logo).not.toHaveClass('!max-h-[27px]');
   });
 });

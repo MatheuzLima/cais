@@ -5,6 +5,7 @@ import {
 } from '@uirouter/react';
 import clsx from 'clsx';
 import { ComponentProps } from 'react';
+import { useTranslation } from 'react-i18next';
 import Tippy from '@tippyjs/react';
 
 import 'tippy.js/dist/tippy.css';
@@ -22,11 +23,13 @@ export function Head({
   to,
   options,
   params = {},
-  label,
+  label: labelKey,
   icon,
   ignorePaths = [],
   'data-cy': dataCy,
 }: Props) {
+  const { t } = useTranslation();
+  const label = t(labelKey);
   const { isOpen } = useSidebarState();
   const anchorProps = useSrefActive(
     to,

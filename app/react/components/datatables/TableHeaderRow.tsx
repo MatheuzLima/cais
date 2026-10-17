@@ -4,6 +4,7 @@ import {
   TableMeta,
   ColumnMeta,
 } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 
 import { filterHOC } from './Filter';
 import { TableHeaderCell } from './TableHeaderCell';
@@ -20,6 +21,8 @@ export function TableHeaderRow<D extends DefaultType = DefaultType>({
   onSortChange,
   tableMeta,
 }: Props<D>) {
+  const { t } = useTranslation();
+
   return (
     <tr>
       {headers.map((header) => {
@@ -44,9 +47,13 @@ export function TableHeaderRow<D extends DefaultType = DefaultType>({
             }}
             isSorted={!!sortDirection}
             isSortedDesc={sortDirection ? sortDirection === 'desc' : false}
-            render={() =>
-              flexRender(header.column.columnDef.header, header.getContext())
-            }
+            render={() => {
+              const columnHeader = header.column.columnDef.header;
+              // plain string headers are English source strings
+              return typeof columnHeader === 'string'
+                ? t(columnHeader)
+                : flexRender(columnHeader, header.getContext());
+            }}
             renderFilter={
               header.column.getCanFilter()
                 ? () =>

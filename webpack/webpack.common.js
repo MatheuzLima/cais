@@ -9,6 +9,7 @@ const Dotenv = require('dotenv-webpack');
 
 const CopyPlugin = require('copy-webpack-plugin');
 const pkg = require('../package.json');
+const branding = require('../app/branding.json');
 const projectRoot = path.resolve(__dirname, '..');
 
 /** @type {import('webpack').Configuration} */
@@ -126,6 +127,9 @@ module.exports = {
       templateParameters: {
         name: pkg.name,
         author: pkg.author,
+        appName: branding.name,
+        appDescription: branding.description,
+        themeColor: branding.themeColor,
       },
       manifest: './assets/ico/manifest.json',
     }),
@@ -135,10 +139,13 @@ module.exports = {
       templateParameters: {
         name: pkg.name,
         author: pkg.author,
+        appName: branding.name,
+        appDescription: branding.description,
+        themeColor: branding.themeColor,
       },
     }),
     new WebpackBuildNotifierPlugin({
-      title: 'Portainer build',
+      title: `${branding.name} build`,
       logo: path.resolve('./assets/favicon-32x32.png'),
       suppressSuccess: true,
     }),

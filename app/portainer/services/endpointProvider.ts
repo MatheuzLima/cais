@@ -1,3 +1,4 @@
+import { APP_NAME } from '@/branding';
 import { ping } from '@/react/docker/proxy/queries/usePing';
 import { environmentStore } from '@/react/hooks/current-environment-store';
 import {
@@ -10,7 +11,7 @@ interface State {
   pingInterval: NodeJS.Timeout | null;
 }
 
-const DEFAULT_TITLE = 'Portainer';
+const DEFAULT_TITLE = APP_NAME;
 
 /* @ngInject */
 export function EndpointProvider() {

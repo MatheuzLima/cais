@@ -10,6 +10,7 @@ import { useIsSwarm } from '@/react/docker/proxy/queries/useInfo';
 import { useEnvironmentId } from '@/react/hooks/useEnvironmentId';
 import { isAgentEnvironment } from '@/react/portainer/environments/utils';
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
 
 import { FormSection } from '@@/form-components/FormSection';
 import { SwitchField } from '@@/form-components/SwitchField';
@@ -110,7 +111,7 @@ export function BaseForm({
           </ImageConfigFieldset>
         </FormSection>
 
-        {canUseWebhook && (
+        {canUseWebhook && !isLimitedToBE(FeatureId.CONTAINER_WEBHOOK) && (
           <Authorized authorizations="PortainerWebhookCreate" adminOnlyCE>
             <FormSection title="Webhook">
               <div className="form-group">

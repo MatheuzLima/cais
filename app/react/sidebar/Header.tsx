@@ -1,12 +1,12 @@
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
-import { isBE } from '@/react/portainer/feature-flags/feature-flags.service';
+import { APP_NAME } from '@/branding';
+import fullLogo from '@/assets/images/brand/cais-logo-white.svg';
+import appIcon from '@/assets/images/brand/cais-mark.svg';
 
 import { Link } from '@@/Link';
 
-import fullLogoBE from './portainer_logo-BE.svg';
-import fullLogoCE from './portainer_logo-CE.svg';
-import portainerIcon from './portainer-p-icon-white.svg';
 import { useSidebarState } from './useSidebarState';
 import styles from './Header.module.css';
 
@@ -16,6 +16,7 @@ interface Props {
 
 export function Header({ logo: customLogo }: Props) {
   const { isOpen } = useSidebarState();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -38,23 +39,8 @@ export function Header({ logo: customLogo }: Props) {
             'th-dark:text-gray-warm-6'
           )}
         >
-          <span className="font-medium">Powered by</span>
-          <span className="font-semibold">
-            {isBE ? (
-              'portainer business'
-            ) : (
-              <a
-                href="https://www.portainer.io/install"
-                className={clsx(
-                  'hover:underline',
-                  'text-blue-6 hover:text-blue-8',
-                  'th-dark:text-blue-7 th-dark:hover:text-blue-9'
-                )}
-              >
-                portainer community
-              </a>
-            )}
-          </span>
+          <span className="font-medium">{t('Powered by')}</span>
+          <span className="font-semibold">{APP_NAME}</span>
         </div>
       )}
     </div>
@@ -66,11 +52,7 @@ function getLogo(isOpen: boolean, customLogo?: string) {
     return customLogo;
   }
 
-  if (!isOpen) {
-    return portainerIcon;
-  }
-
-  return isBE ? fullLogoBE : fullLogoCE;
+  return isOpen ? fullLogo : appIcon;
 }
 
 function Logo({
@@ -88,7 +70,7 @@ function Logo({
       className={clsx('img-responsive', styles.logo, {
         '!max-h-[27px]': !isOpen,
       })}
-      alt="Logo"
+      alt={APP_NAME}
     />
   );
 }

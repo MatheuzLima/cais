@@ -20,3 +20,6 @@ go.work.sum
 
 .vitest
 
+
+# local pnpm store (created when the repo is on a different drive than the user store)
+.pnpm-store/

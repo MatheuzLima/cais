@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
@@ -17,6 +18,8 @@ export function SortableListPagerInfo({
   onPageSizeChange,
   onPageChange,
 }: Props) {
+  const { t } = useTranslation();
+
   if (totalCount === 0) return null;
 
   const start = page * pageSize + 1;
@@ -25,11 +28,11 @@ export function SortableListPagerInfo({
   return (
     <div className="flex items-center gap-3">
       <span>
-        Showing{' '}
+        {t('Showing')}{' '}
         <strong>
           {start}–{end}
         </strong>{' '}
-        of <strong>{totalCount}</strong>
+        {t('of')} <strong>{totalCount}</strong>
       </span>
 
       <select

@@ -17,6 +17,7 @@ export default defineConfig({
       './app/setup-tests/setup-msw.ts',
       './app/setup-tests/stub-modules.ts',
       './app/setup-tests/setup.ts',
+      './app/setup-tests/i18n.ts',
       './app/setup-tests/setup-codemirror.ts',
       './app/setup-tests/setup-fail-on-console.ts',
     ],

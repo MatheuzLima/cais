@@ -208,14 +208,18 @@ func redeployWhenChangedSecondStage(
 		return err
 	}
 
+	// Stacks without auto-update settings keep the historical behavior of
+	// always pulling images on redeploy
+	pullImage := stack.AutoUpdate == nil || stack.AutoUpdate.ForcePullImage
+
 	redeployStack := func(stack *portainer.Stack) error {
 		var err error
 		switch stack.Type {
 		case portainer.DockerComposeStack:
 			if stackutils.IsRelativePathStack(stack) {
-				err = deployer.DeployRemoteComposeStack(ctx, user.ID, stack, endpoint, registries, true, true, false)
+				err = deployer.DeployRemoteComposeStack(ctx, user.ID, stack, endpoint, registries, true, pullImage, false)
 			} else {
-				err = deployer.DeployComposeStack(ctx, stack, endpoint, registries, true, true, false)
+				err = deployer.DeployComposeStack(ctx, stack, endpoint, registries, true, pullImage, false)
 			}
 
 			if err != nil {
@@ -223,9 +227,9 @@ func redeployWhenChangedSecondStage(
 			}
 		case portainer.DockerSwarmStack:
 			if stackutils.IsRelativePathStack(stack) {
-				err = deployer.DeployRemoteSwarmStack(ctx, user.ID, stack, endpoint, registries, true, true)
+				err = deployer.DeployRemoteSwarmStack(ctx, user.ID, stack, endpoint, registries, true, pullImage)
 			} else {
-				err = deployer.DeploySwarmStack(ctx, stack, endpoint, registries, true, true)
+				err = deployer.DeploySwarmStack(ctx, stack, endpoint, registries, true, pullImage)
 			}
 			if err != nil {
 				return errors.WithMessagef(err, "failed to deploy a docker compose stack %v", stack.ID)

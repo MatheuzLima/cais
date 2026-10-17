@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 import { FilterBarButton, Color } from './FilterBarButton';
 import { FilterBarActiveIndicator } from './FilterBarActiveIndicator';
@@ -34,8 +35,10 @@ export function StatusSummaryBar<TValue extends string = string>({
   'data-cy': dataCy = 'status-summary-bar',
   rightSlot,
 }: Props<TValue>) {
+  const { t } = useTranslation();
   const isAllSelected = !value || value === 'all' || value === 'custom';
-  const activeLabel = segments.find((s) => s.key === value)?.label;
+  const activeKey = segments.find((s) => s.key === value)?.label;
+  const activeLabel = activeKey && t(activeKey);
 
   function handleSegmentClick(key: TValue) {
     onChange(value === key ? null : key);
@@ -52,11 +55,11 @@ export function StatusSummaryBar<TValue extends string = string>({
       )}
       data-cy={dataCy}
       role="radiogroup"
-      aria-label={ariaLabel}
+      aria-label={t(ariaLabel)}
     >
       <FilterBarButton
         count={total}
-        label="Total"
+        label={t('Total')}
         isSelected={isAllSelected}
         onClick={() => onChange(null)}
         name={radioGroupName}
@@ -71,7 +74,7 @@ export function StatusSummaryBar<TValue extends string = string>({
           key={key}
           color={color}
           count={count}
-          label={label}
+          label={t(label)}
           isSelected={value === key}
           onClick={() => handleSegmentClick(key)}
           name={radioGroupName}

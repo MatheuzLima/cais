@@ -45,7 +45,7 @@ export function ActivityLogsView() {
       />
 
       <div className="mx-4">
-        <BEOverlay variant="multi-widget" featureId={FeatureId.ACTIVITY_AUDIT}>
+        <BEOverlay featureId={FeatureId.ACTIVITY_AUDIT}>
           <div className="row">
             <div className="col-sm-12">
               <FilterBar

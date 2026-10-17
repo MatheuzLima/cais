@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { PropsWithChildren } from 'react';
 import { Cpu, Gpu, Hexagon, LaptopMinimal, MemoryStick } from 'lucide-react';
@@ -16,6 +17,8 @@ export function StatsItem({
   children,
   iconClass,
 }: PropsWithChildren<Props>) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={clsx(
@@ -27,7 +30,7 @@ export function StatsItem({
     >
       <div className="flex items-center gap-1 text-[10px]">
         <Icon className={clsx('icon icon-sm', iconClass)} icon={icon} />
-        <span>{title}</span>
+        <span>{title && t(title)}</span>
       </div>
       <div className="flex w-full items-baseline gap-1">{children}</div>
     </div>
@@ -47,12 +50,14 @@ export function NodeStats({ value }: StatsProps) {
 }
 
 export function CPUStats({ value }: StatsProps) {
+  const { t } = useTranslation();
+
   return (
     <StatsItem icon={Cpu} title="CPUS">
       <span className="min-w-[2ch] text-right font-bold tabular-nums leading-none">
         {value}
       </span>
-      <span className="align-baseline text-xs leading-none">cores</span>
+      <span className="align-baseline text-xs leading-none">{t('cores')}</span>
     </StatsItem>
   );
 }

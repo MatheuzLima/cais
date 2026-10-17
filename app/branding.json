@@ -1,0 +1,9 @@
+{
+  "name": "Cais",
+  "description": "Lightweight container management for Docker and Swarm",
+  "upstreamName": "Portainer CE",
+  "upstreamUrl": "https://github.com/portainer/portainer",
+  "repositoryUrl": "https://github.com/portainer/portainer",
+  "themeColor": "#0E9F9A",
+  "enableKubernetes": false
+}

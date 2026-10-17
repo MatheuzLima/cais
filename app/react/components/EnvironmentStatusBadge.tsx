@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import {
@@ -37,6 +38,7 @@ function EnvironmentStatusBadgeComponent({
   text: string;
   heartbeat?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <span
       className={clsx(
@@ -61,7 +63,7 @@ function EnvironmentStatusBadgeComponent({
           }
         )}
       />
-      <span>{text}</span>
+      <span>{t(text)}</span>
     </span>
   );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { PropsWithChildren, ReactNode } from 'react';
 
@@ -19,6 +20,7 @@ export function WidgetTitle({
   subtitle,
 }: PropsWithChildren<Props>) {
   const { titleId } = useWidgetContext();
+  const { t } = useTranslation();
 
   return (
     <div className="widget-header">
@@ -26,12 +28,12 @@ export function WidgetTitle({
         <span className={clsx('inline-flex items-center gap-1', className)}>
           {icon && <WidgetIcon icon={icon} />}
           <h2 id={titleId} className={clsx('m-0 text-base', icon && 'ml-1')}>
-            {title}
+            {typeof title === 'string' ? t(title) : title}
           </h2>
         </span>
         <span className={clsx('flex items-center', className)}>{children}</span>
       </div>
-      {subtitle && <span className="text-muted small">{subtitle}</span>}
+      {subtitle && <span className="text-muted small">{t(subtitle)}</span>}
     </div>
   );
 }

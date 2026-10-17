@@ -53,7 +53,6 @@ describe('SettingsSidebar', () => {
       expect(
         screen.getByTestId('portainerSidebar-registries')
       ).toBeInTheDocument();
-      expect(screen.getByTestId('k8sSidebar-logs')).toBeInTheDocument();
       expect(
         screen.getByTestId('portainerSidebar-notifications')
       ).toBeInTheDocument();
@@ -67,7 +66,10 @@ describe('SettingsSidebar', () => {
 
       expect(screen.getByTestId('portainerSidebar-users')).toBeInTheDocument();
       expect(screen.getByTestId('portainerSidebar-teams')).toBeInTheDocument();
-      expect(screen.getByTestId('portainerSidebar-roles')).toBeInTheDocument();
+      // RBAC roles are a paid upstream feature that Cais does not offer
+      expect(
+        screen.queryByTestId('portainerSidebar-roles')
+      ).not.toBeInTheDocument();
     });
 
     it('should render environment-related submenu items', () => {
@@ -84,15 +86,13 @@ describe('SettingsSidebar', () => {
       ).toBeInTheDocument();
     });
 
-    it('should render logs submenu items', () => {
+    it('should not render audit logs, which Cais does not offer', () => {
       renderComponent({ isPureAdmin: true, isAdmin: true });
 
+      expect(screen.queryByTestId('k8sSidebar-logs')).not.toBeInTheDocument();
       expect(
-        screen.getByTestId('portainerSidebar-authLogs')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('portainerSidebar-activityLogs')
-      ).toBeInTheDocument();
+        screen.queryByTestId('portainerSidebar-authLogs')
+      ).not.toBeInTheDocument();
     });
 
     it('should render settings submenu items', () => {
@@ -109,14 +109,14 @@ describe('SettingsSidebar', () => {
       ).toBeInTheDocument();
     });
 
-    it('should render Get Help link with correct CE URL', () => {
+    it('should render Get Help link pointing to the repository issues', () => {
       renderComponent({ isPureAdmin: true, isAdmin: true });
 
       const helpLink = screen.getByRole('link', { name: /Get Help/i });
       expect(helpLink).toBeInTheDocument();
       expect(helpLink).toHaveAttribute(
         'href',
-        'https://www.portainer.io/resources/get-support'
+        'https://github.com/portainer/portainer/issues'
       );
       expect(helpLink).toHaveAttribute('target', '_blank');
       expect(helpLink).toHaveAttribute('rel', 'noreferrer');

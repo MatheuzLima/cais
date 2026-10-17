@@ -1,5 +1,6 @@
 import { Eye, Moon, RefreshCw, Sun } from 'lucide-react';
 import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { User, ThemeColor } from '@/portainer/users/types';
 import { applyTheme } from '@/react/portainer/services/applyTheme';
@@ -26,6 +27,7 @@ const themeSegmentItems: SegmentItem[] = themeOptions.map((option) => ({
 }));
 
 export function ThemeSelector({ user }: { user: User }) {
+  const { t } = useTranslation();
   const updateMutation = useUpdateUserMutation();
   const activeTheme = user?.ThemeSettings?.color ?? 'auto';
 
@@ -37,8 +39,11 @@ export function ThemeSelector({ user }: { user: User }) {
 
   return (
     <SegmentedControl
-      label="Theme"
-      items={themeSegmentItems}
+      label={t('Theme')}
+      items={themeSegmentItems.map((item) => ({
+        ...item,
+        title: item.title && t(item.title),
+      }))}
       activeId={activeTheme}
       onChange={handleThemeSelect}
       size="md"

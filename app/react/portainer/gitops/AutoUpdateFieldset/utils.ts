@@ -27,7 +27,8 @@ export function getDefaultAutoUpdateValues(): AutoUpdateModel {
   return {
     RepositoryAutomaticUpdates: false,
     RepositoryAutomaticUpdatesForce: false,
-    ForcePullImage: false,
+    // Cais: the CE backend always re-pulled images, keep that as the default
+    ForcePullImage: true,
   };
 }
 

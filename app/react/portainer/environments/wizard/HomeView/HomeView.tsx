@@ -1,6 +1,8 @@
 import { Wand2, Plug2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { EnvironmentType } from '@/react/portainer/environments/types';
+import { APP_NAME } from '@/branding';
 import DockerIcon from '@/assets/ico/vendor/docker-icon.svg?c';
 import Kube from '@/assets/ico/kube.svg?c';
 
@@ -15,6 +17,7 @@ import styles from './HomeView.module.css';
 
 export function HomeView() {
   const localEnvironmentAdded = useConnectLocalEnvironment();
+  const { t } = useTranslation();
   return (
     <>
       <PageHeader
@@ -30,22 +33,31 @@ export function HomeView() {
             <WidgetBody>
               <div className="row">
                 <div className="col-sm-12 form-section-title">
-                  Welcome to Portainer
+                  {t('Welcome to {{name}}', { name: APP_NAME })}
                 </div>
                 <div className="text-muted small">
                   {localEnvironmentAdded.status === 'success' && (
                     <p>
-                      We have connected your local environment of{' '}
-                      {getTypeLabel(localEnvironmentAdded.type)} to Portainer.
+                      {t(
+                        'We have connected your local environment of {{type}} to {{name}}.',
+                        {
+                          type: getTypeLabel(localEnvironmentAdded.type),
+                          name: APP_NAME,
+                        }
+                      )}
                     </p>
                   )}
 
                   {localEnvironmentAdded.status === 'error' && (
                     <p>
-                      We could not connect your local environment to Portainer.
+                      {t(
+                        'We could not connect your local environment to {{name}}.',
+                        { name: APP_NAME }
+                      )}
                       <br />
-                      Please ensure your environment is correctly exposed. For
-                      help with installation visit{' '}
+                      {t(
+                        'Please ensure your environment is correctly exposed. For help with installation visit'
+                      )}{' '}
                       <a
                         href="https://docs.portainer.io/start/intro"
                         target="_blank"
@@ -57,8 +69,9 @@ export function HomeView() {
                   )}
 
                   <p>
-                    Get started below with your local portainer or connect more
-                    container environments.
+                    {t(
+                      'Get started below with your local environment or connect more container environments.'
+                    )}
                   </p>
                 </div>
 
@@ -75,8 +88,11 @@ export function HomeView() {
                             ? DockerIcon
                             : Kube
                         }
-                        title="Get Started"
-                        description="Proceed using the local environment which Portainer is running in"
+                        title={t('Get Started')}
+                        description={t(
+                          'Proceed using the local environment which {{name}} is running in',
+                          { name: APP_NAME }
+                        )}
                       />
                     </Link>
                   )}
@@ -86,9 +102,9 @@ export function HomeView() {
                     data-cy="wizard-add-environments-link"
                   >
                     <Option
-                      title="Add Environments"
+                      title={t('Add Environments')}
                       icon={Plug2}
-                      description="Connect to other environments"
+                      description={t('Connect to other environments')}
                     />
                   </Link>
                 </div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useRouter } from '@uirouter/react';
 import { Wand2 } from 'lucide-react';
 
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
+
 import { Button } from '@@/buttons';
 import { PageHeader } from '@@/PageHeader';
 import { Widget, WidgetBody, WidgetTitle } from '@@/Widget';
@@ -45,16 +47,24 @@ export function EnvironmentTypeSelectView() {
                     onChange={setTypes}
                     options={existingEnvironmentTypes}
                   />
-                  <p className="control-label !mb-2">Set up new environments</p>
-                  <EnvironmentSelector
-                    value={types}
-                    onChange={setTypes}
-                    options={newEnvironmentTypes}
-                    hiddenSpacingCount={
-                      existingEnvironmentTypes.length -
-                      newEnvironmentTypes.length
-                    }
-                  />
+                  {newEnvironmentTypes.some(
+                    (option) => !isLimitedToBE(option.feature)
+                  ) && (
+                    <>
+                      <p className="control-label !mb-2">
+                        Set up new environments
+                      </p>
+                      <EnvironmentSelector
+                        value={types}
+                        onChange={setTypes}
+                        options={newEnvironmentTypes}
+                        hiddenSpacingCount={
+                          existingEnvironmentTypes.length -
+                          newEnvironmentTypes.length
+                        }
+                      />
+                    </>
+                  )}
                 </FormSection>
               </div>
               <Button

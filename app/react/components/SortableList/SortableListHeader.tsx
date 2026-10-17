@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import clsx from 'clsx';
 
@@ -37,6 +38,8 @@ export function SortableListHeader<TSortKey extends string>({
   headerButtons,
   'data-cy': dataCy,
 }: Props<TSortKey> & AutomationTestingProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={clsx(
@@ -56,7 +59,7 @@ export function SortableListHeader<TSortKey extends string>({
         {headerButtons}
         <SearchBar
           value={searchTerm}
-          placeholder={searchPlaceholder}
+          placeholder={t(searchPlaceholder)}
           onChange={onSearchChange}
           data-cy={`${dataCy}-search`}
           className={clsx(

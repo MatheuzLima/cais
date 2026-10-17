@@ -32,6 +32,11 @@ export function LdapSettingsTestLogin({
     isLimitedFeatureSelfContained || isLimitedToBE(limitedFeatureId);
   const mutation = useTestLdapMutation();
 
+  // Cais: sections that are entirely unavailable are hidden, not teased
+  if (isLimitedFeatureSelfContained && isLimitedToBE(limitedFeatureId)) {
+    return null;
+  }
+
   return (
     <FormSection title="Test login">
       <Formik

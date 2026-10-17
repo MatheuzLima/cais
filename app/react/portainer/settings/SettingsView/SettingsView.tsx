@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import angular from 'angular';
 
 import { StateManager } from '@/portainer/services/types';
+import { ENABLE_KUBERNETES } from '@/branding';
 
 import { PageHeader } from '@@/PageHeader';
 
@@ -42,11 +43,13 @@ export function SettingsView() {
               settings={settingsQuery.data}
             />
 
-            <KubeSettingsPanel settings={settingsQuery.data} />
+            {ENABLE_KUBERNETES && (
+              <KubeSettingsPanel settings={settingsQuery.data} />
+            )}
           </>
         )}
 
-        <HelmCertPanel />
+        {ENABLE_KUBERNETES && <HelmCertPanel />}
 
         <SSLSettingsPanelWrapper />
 

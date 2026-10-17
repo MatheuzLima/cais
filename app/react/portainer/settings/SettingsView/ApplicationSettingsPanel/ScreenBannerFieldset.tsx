@@ -1,6 +1,7 @@
 import { useField, Field } from 'formik';
 
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
 
 import { FormControl } from '@@/form-components/FormControl';
 import { TextArea } from '@@/form-components/Input/Textarea';
@@ -11,6 +12,10 @@ import { useToggledValue } from '../useToggledValue';
 export function ScreenBannerFieldset() {
   const [{ name }, { error }] = useField<string>('loginBanner');
   const [isEnabled, setIsEnabled] = useToggledValue('loginBanner');
+
+  if (isLimitedToBE(FeatureId.CUSTOM_LOGIN_BANNER)) {
+    return null;
+  }
 
   return (
     <>

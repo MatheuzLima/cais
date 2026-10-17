@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
+
 import { FormError } from '@@/form-components/FormError';
 import { FormSectionTitle } from '@@/form-components/FormSectionTitle';
 
@@ -62,7 +64,9 @@ export function BoxSelector<T extends Value>({
             aria-label={ariaLabel ?? label}
           >
             {options
-              .filter((option) => !option.hide)
+              .filter(
+                (option) => !option.hide && !isLimitedToBE(option.feature)
+              )
               .map(({ disabled, ...option }) => (
                 <BoxSelectorItem
                   key={option.id}

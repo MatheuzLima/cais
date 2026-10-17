@@ -1,6 +1,7 @@
 import { type LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { MouseEventHandler, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { AutomationTestingProps } from '@/types';
 
@@ -31,13 +32,16 @@ export function SidebarItem({
   icon,
   to,
   params,
-  label,
+  label: labelKey,
   isSubMenu = false,
   ignorePaths = [],
   includePaths = [],
   count,
   'data-cy': dataCy,
 }: Props) {
+  const { t } = useTranslation();
+  // sidebar labels are English source strings, translated here for every menu
+  const label = t(labelKey);
   const { isOpen } = useSidebarState();
   const anchorProps = useSidebarSrefActive(to, undefined, params, undefined, {
     ignorePaths,

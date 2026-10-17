@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import clsx from 'clsx';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { Icon, IconProps } from '@/react/components/Icon';
 import { pluralize } from '@/portainer/helpers/strings';
@@ -31,6 +32,7 @@ export function DashboardItem({
   children,
   'data-cy': dataCy,
 }: Props) {
+  const { t } = useTranslation();
   const Item = (
     <div
       className={clsx(
@@ -47,7 +49,7 @@ export function DashboardItem({
           isRefetching ? 'opacity-100' : 'opacity-0'
         )}
       >
-        Refreshing total
+        {t('Refreshing total')}
         <Loader2 className="ml-1 h-4 animate-spin-slow" />
       </div>
       <div
@@ -56,7 +58,7 @@ export function DashboardItem({
           isLoading ? 'opacity-100' : 'opacity-0'
         )}
       >
-        Loading total
+        {t('Loading total')}
         <Loader2 className="ml-1 h-4 animate-spin-slow" />
       </div>
       <div className="flex items-center" aria-label={type}>
@@ -92,7 +94,7 @@ export function DashboardItem({
             )}
             aria-label="resourceType"
           >
-            {pluralize(value || 0, type, pluralType)}
+            {t(pluralize(value || 0, type, pluralType))}
           </div>
         </div>
 

@@ -1,61 +1,94 @@
 <p align="center">
-  <img title="portainer" src='https://github.com/portainer/portainer/blob/develop/app/assets/images/portainer-github-banner.png?raw=true' />
+  <img src="app/assets/images/brand/cais-logo-black.svg" alt="Cais" width="232" />
 </p>
 
-**Portainer Community Edition** is a free, lightweight container management UI for Docker, Swarm, Podman, Kubernetes, and ACI environments. It is provided as-is, at no cost, for the convenience of homelab operators, hobbyists, students, and anyone experimenting with containers on their own hardware.
+# Cais
 
-**Portainer Business Edition** builds on the same open-source base and adds the features, hardening, and commercial support that production and enterprise environments require (RBAC, GitOps, edge management, audit, SSO, and more).
+**Cais** is a lightweight container management UI for Docker and Swarm. It is a fork of
+[Portainer CE](https://github.com/portainer/portainer) with its own identity and a
+bilingual interface (English / Português do Brasil).
 
-- [Find out more about Portainer Business Edition features](https://www.portainer.io/features)
-- [Take3 – get 3 free nodes of Portainer Business for as long as you want them](https://www.portainer.io/take-3)
-- [Get started with Portainer BE](https://www.portainer.io/get-started)
+> Cais (pt): *wharf, quay*. The place where ships, and their containers, dock.
 
-## Intended use
+## What is different from Portainer CE
 
-Portainer CE is designed for homelabs, learning environments, personal projects, and other non-production deployments. It is not intended for, or supported in, business, production, or any other environment where uptime, security posture, or data integrity matter.
+| Area | Change |
+| ---- | ------ |
+| Identity | Name, logo, favicons, page titles and footer come from [`app/branding.json`](app/branding.json) |
+| i18n | English and Brazilian Portuguese, with a language switcher in the user menu and on the login page |
+| No upsell | Upstream greys out paid "Business Feature" options as teasers. Cais hides every option it does not implement, so nothing on screen is locked |
+| Unlocked | GitOps *Force redeployment* and *Re-pull image* (the server already implemented them; re-pull is now honoured and on by default) |
+| Docker focus | Kubernetes and Azure ACI are not offered in the environment wizard or settings. Set `"enableKubernetes": true` in `app/branding.json` to bring them back |
+| Build | [`build/cais/Dockerfile`](build/cais/Dockerfile) builds client and server inside Docker; no local Go needed |
 
-It is provided without support, without warranty (express or implied), and without any commitment as to fitness for a particular purpose. There is no SLA, no guaranteed response to issues, and no roadmap commitment. If you run Portainer CE, you are choosing to self-support, and you should be comfortable reading source, filing your own issues, and troubleshooting on your own.
+Everything else (Docker, Swarm, Podman, Edge agents, stacks, GitOps, templates, registries, teams, OAuth/LDAP login, backups) is upstream Portainer CE.
 
-If you need Portainer in a production or business-critical context, or you want commercial support, use Portainer Business Edition.
+Paid upstream features (RBAC roles, activity/authentication audit logs, S3 backups, container and non-Git stack webhooks, custom login banner, Active Directory/OpenLDAP presets, Kubernetes extras) are **not** part of the open-source code and are not available in Cais.
 
-## Latest version
+### Resource usage
 
-Portainer CE is updated periodically, with no guarantees on cadence, and is provided as-is and without support. Business Edition releases will be more frequent than Community Edition.
+The server is a single Go binary. Measured with Docker Desktop on Linux: ~20 MB RAM idle and ~35 MB peak with 15 containers and 480 parallel API requests, with no tuning needed. The image is about 200 MB, so a 1 GB VPS is plenty.
 
-[![latest version](https://img.shields.io/github/v/release/portainer/portainer?color=%2344cc11&label=Latest%20release&style=for-the-badge)](https://github.com/portainer/portainer/releases/latest)
+## Run
 
-## Getting started
+```bash
+docker compose -f docker-compose.cais.yml up -d --build
+```
 
-- [Deploy Portainer](https://docs.portainer.io/start/install-ce)
-- [Documentation](https://docs.portainer.io)
-- [Contribute to the project](CONTRIBUTING.md)
+Open https://localhost:9443 (self-signed certificate) or http://localhost:9000 and create the admin user.
 
-## Getting help
+## Develop
 
-Portainer CE has no official support channel.
+Requirements: Node 22+, pnpm 10 (`npx pnpm@10.26.2`), Docker.
 
-You may find help from other users via GitHub Issues and the community Slack, but any assistance you receive there is voluntary, best-effort, and provided by other community members rather than by Portainer. It is not a substitute for commercial support.
+```bash
+pnpm install
+pnpm dev          # webpack dev server on :8999, proxies /api to :9000
+pnpm typecheck
+pnpm test
+```
 
-- Issues: https://github.com/portainer/portainer/issues
-- Community: [https://www.portainer.io/join-our-community](https://www.portainer.io/join-our-community)
+For the API on :9000 during development, run the image built above, or install Go 1.26 and use `make build-server`.
 
-If you need commercial support, guaranteed response, or you are running Portainer in a production or business-critical context, buy a supported version at [portainer.io](https://www.portainer.io/).
+## Translating
 
-## Reporting bugs and contributing
+Translation keys are the English source strings (gettext style), so anything not yet
+translated falls back to English and the UI can be translated incrementally.
 
-- Want to report a bug or request a feature? Open [an issue](https://github.com/portainer/portainer/issues/new/choose). Please note that filing an issue does not create any obligation on the project to respond, triage, or fix it.
-- Want to help build **_Portainer_**? Follow our [contribution guidelines](CONTRIBUTING.md) to build it locally and open a pull request.
+- React: `const { t } = useTranslation(); t('Containers')`
+- AngularJS templates: `{{ 'Log in to your account' | translate }}`
+- Interpolation: `t('About {{name}}', { name })`
+- Interpolation in AngularJS templates uses `__name__`, since `{{name}}` would close the surrounding expression:
+  `{{ 'At least __count__ characters' | translate: { count: n } }}`
 
-## Security
+Add the translated string to [`translations/pt-BR/translation.json`](translations/pt-BR/translation.json).
+`translations/en/translation.json` stays empty unless an English string needs to differ from its key.
 
-For information about reporting security vulnerabilities, please see our [Security Policy](SECURITY.md).
+Shared components already translate their string props, so these are covered by adding
+the string to the dictionary only: sidebar items and sections, page titles, breadcrumbs,
+datatable titles, string column headers, widget titles, details-table rows, form labels
+and sections, modal titles, toast notifications, search placeholders and the environment list. Adding a language means a new folder in `translations/` and an entry in
+`supportedLanguages` in [`app/i18n.ts`](app/i18n.ts).
 
-## Work for us
+## Branding
 
-If you are a developer, and our code in this repo makes sense to you, we would love to hear from you. We are always on the hunt for good devs, either freelance or employed. Drop us a line at contribute@portainer.io with your details, or visit our [careers page](https://apply.workable.com/portainer/).
+Change [`app/branding.json`](app/branding.json) (name, description, links, theme color) and the
+SVGs in [`app/assets/images/brand`](app/assets/images/brand). `logo_alt*.svg`, the favicons in
+`app/assets/ico` and `safari-pinned-tab.svg` are derived from the brand mark.
 
-## Licensing
+## Syncing with Portainer
 
-Portainer is licensed under the zlib license. See [LICENSE](./LICENSE) for reference.
+The original project is the `upstream` remote:
 
-Portainer also contains code from open source projects. See [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) for a list.
+```bash
+git fetch upstream
+git merge upstream/develop
+```
+
+## License
+
+Portainer CE is distributed under the [zlib license](LICENSE), which allows modified
+redistribution provided that altered versions are plainly marked as such and are not
+misrepresented as the original software. Cais is an altered version of Portainer CE; it
+is not affiliated with or endorsed by Portainer.io. "Portainer" is a trademark of its
+owners. The original README is kept at [`docs/UPSTREAM_README.md`](docs/UPSTREAM_README.md).

@@ -1,5 +1,6 @@
 import { useRouter } from '@uirouter/react';
 import { Pause, Play, RefreshCw, Slash, Square, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import * as notifications from '@/portainer/services/notifications';
 import { useAuthorizations, Authorized } from '@/react/hooks/useUser';
@@ -71,6 +72,7 @@ export function ContainersDatatableActions({
   ]);
 
   const router = useRouter();
+  const { t } = useTranslation();
 
   if (!authorized) {
     return null;
@@ -87,7 +89,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0 || !hasStoppedItemsSelected}
             icon={Play}
           >
-            Start
+            {t('Start')}
           </Button>
         </Authorized>
 
@@ -99,7 +101,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0 || !hasRunningItemsSelected}
             icon={Square}
           >
-            Stop
+            {t('Stop')}
           </Button>
         </Authorized>
 
@@ -111,7 +113,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0 || hasStoppedItemsSelected}
             icon={Slash}
           >
-            Kill
+            {t('Kill')}
           </Button>
         </Authorized>
 
@@ -123,7 +125,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0}
             icon={RefreshCw}
           >
-            Restart
+            {t('Restart')}
           </Button>
         </Authorized>
 
@@ -135,7 +137,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0 || !hasRunningItemsSelected}
             icon={Pause}
           >
-            Pause
+            {t('Pause')}
           </Button>
         </Authorized>
 
@@ -147,7 +149,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0 || !hasPausedItemsSelected}
             icon={Play}
           >
-            Resume
+            {t('Resume')}
           </Button>
         </Authorized>
 
@@ -159,7 +161,7 @@ export function ContainersDatatableActions({
             disabled={selectedItemCount === 0}
             icon={Trash2}
           >
-            Remove
+            {t('Remove')}
           </Button>
         </Authorized>
       </ButtonGroup>
@@ -167,7 +169,7 @@ export function ContainersDatatableActions({
         <div className="space-left">
           <Authorized authorizations="DockerContainerCreate">
             <AddButton data-cy="add-docker-container-button">
-              Add container
+              {t('Add container')}
             </AddButton>
           </Authorized>
         </div>

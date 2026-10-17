@@ -3,10 +3,10 @@ import { Search } from 'lucide-react';
 
 import { EnvironmentId } from '@/react/portainer/environments/types';
 import { FeatureId } from '@/react/portainer/feature-flags/enums';
+import { isLimitedToBE } from '@/react/portainer/feature-flags/feature-flags.service';
 
 import { Link } from '@@/Link';
 import { Button } from '@@/buttons';
-import { BEFeatureIndicator } from '@@/BEFeatureIndicator';
 
 import { DecoratedRegistry } from '../types';
 import { RegistryTypes } from '../../../types/registry';
@@ -42,29 +42,26 @@ export function BrowseButton({
   registry: DecoratedRegistry;
   environmentId?: EnvironmentId;
 }) {
-  const canBrowse = !nonBrowsableTypes.includes(registry.Type);
+  const canBrowse =
+    !nonBrowsableTypes.includes(registry.Type) &&
+    !isLimitedToBE(FeatureId.REGISTRY_MANAGEMENT);
 
   if (!canBrowse) {
     return null;
   }
 
   return (
-    <BEFeatureIndicator featureId={FeatureId.REGISTRY_MANAGEMENT}>
-      {(isLimited) => (
-        <Button
-          color="link"
-          as={Link}
-          props={{
-            to: 'portainer.registries.registry.repositories',
-            params: { id: registry.Id, endpointId: environmentId },
-          }}
-          disabled={isLimited}
-          icon={Search}
-          data-cy={`browse-registry-button-${registry.Name}`}
-        >
-          Browse
-        </Button>
-      )}
-    </BEFeatureIndicator>
+    <Button
+      color="link"
+      as={Link}
+      props={{
+        to: 'portainer.registries.registry.repositories',
+        params: { id: registry.Id, endpointId: environmentId },
+      }}
+      icon={Search}
+      data-cy={`browse-registry-button-${registry.Name}`}
+    >
+      Browse
+    </Button>
   );
 }

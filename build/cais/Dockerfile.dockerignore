@@ -1,0 +1,8 @@
+.git
+node_modules
+dist
+coverage
+storybook-static
+**/*.test.ts
+**/*.test.tsx
+**/*.stories.tsx

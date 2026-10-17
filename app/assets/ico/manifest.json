@@ -1,5 +1,6 @@
 {
-  "name": "Portainer",
+  "name": "Cais",
+  "short_name": "Cais",
   "icons": [
     {
       "src": "ico/android-chrome-192x192.png",
@@ -12,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#0E9F9A",
   "background_color": "#ffffff",
   "display": "standalone"
 }

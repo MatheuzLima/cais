@@ -1,0 +1,17 @@
+services:
+  cais:
+    build:
+      context: .
+      dockerfile: build/cais/Dockerfile
+    image: cais:local
+    container_name: cais
+    restart: unless-stopped
+    ports:
+      - '9443:9443'
+      - '9000:9000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - cais_data:/data
+
+volumes:
+  cais_data:
