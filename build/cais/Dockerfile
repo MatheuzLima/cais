@@ -5,11 +5,15 @@
 #
 #   docker build -f build/cais/Dockerfile -t cais:local .
 #
+# Multi-platform (the frontend is built once and Go cross-compiles, so no emulation):
+#
+#   docker buildx build -f build/cais/Dockerfile --platform linux/amd64,linux/arm64 .
+#
 
 ARG NODE_VERSION=22
 ARG GO_VERSION=1.26
 
-FROM node:${NODE_VERSION}-bookworm AS client
+FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-bookworm AS client
 WORKDIR /src
 ENV CI=true
 RUN corepack enable
@@ -20,7 +24,7 @@ COPY . .
 RUN NODE_ENV=production pnpm run build --config webpack/webpack.production.js
 
 
-FROM golang:${GO_VERSION}-bookworm AS server
+FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-bookworm AS server
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN --mount=type=cache,id=cais-gomod,target=/go/pkg/mod go mod download
@@ -28,10 +32,12 @@ COPY api ./api
 COPY pkg ./pkg
 ARG GIT_COMMIT=unspecified
 ARG IMAGE_TAG=local
+ARG TARGETOS=linux
+ARG TARGETARCH
 RUN --mount=type=cache,id=cais-gomod,target=/go/pkg/mod \
     --mount=type=cache,id=cais-gobuild,target=/root/.cache/go-build \
     BUILD=github.com/portainer/portainer/pkg/build && \
-    CGO_ENABLED=0 go build -trimpath -o /out/portainer \
+    CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -o /out/portainer \
       -ldflags "-s \
         -X '${BUILD}.ImageTag=${IMAGE_TAG}' \
         -X '${BUILD}.GitCommit=${GIT_COMMIT}' \
@@ -41,9 +47,11 @@ RUN --mount=type=cache,id=cais-gomod,target=/go/pkg/mod \
       ./api/cmd/portainer
 
 
+# No RUN steps here, so other architectures build without emulation.
+# alpine already ships the CA bundle; time zones come from the build stage.
 FROM alpine:3.22 AS production
-RUN apk add --no-cache ca-certificates tzdata
 
+COPY --from=server /usr/share/zoneinfo /usr/share/zoneinfo
 COPY mustache-templates /mustache-templates/
 COPY --from=server /out/portainer /portainer
 COPY --from=client /src/dist/public /public/
@@ -57,7 +65,8 @@ EXPOSE 8000
 
 ARG GIT_COMMIT=unspecified
 LABEL org.opencontainers.image.title="Cais" \
-  org.opencontainers.image.description="Container management for Docker, Swarm and Kubernetes. Fork of Portainer CE (zlib license)." \
+  org.opencontainers.image.description="Lightweight container management UI for Docker and Swarm, in English and Portuguese." \
+  org.opencontainers.image.source="https://github.com/MatheuzLima/cais" \
   org.opencontainers.image.revision=$GIT_COMMIT \
   org.opencontainers.image.licenses="Zlib" \
   org.opencontainers.image.base.name="alpine:3.22"

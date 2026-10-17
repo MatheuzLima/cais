@@ -8,18 +8,18 @@
 [Portainer CE](https://github.com/portainer/portainer) with its own identity and a
 bilingual interface (English / Português do Brasil).
 
-> Cais (pt): *wharf, quay*. The place where ships, and their containers, dock.
+> Cais (pt): _wharf, quay_. The place where ships, and their containers, dock.
 
 ## What is different from Portainer CE
 
-| Area | Change |
-| ---- | ------ |
-| Identity | Name, logo, favicons, page titles and footer come from [`app/branding.json`](app/branding.json); the UI shows the app name wherever upstream said "Portainer", and help links point to this repository |
-| i18n | English and Brazilian Portuguese, with a language switcher in the user menu and on the login page |
-| No upsell | Upstream greys out paid "Business Feature" options as teasers. Cais hides every option it does not implement, so nothing on screen is locked |
-| Unlocked | GitOps *Force redeployment* and *Re-pull image* (the server already implemented them; re-pull is now honoured and on by default) |
-| Docker focus | Kubernetes and Azure ACI are not offered in the environment wizard or settings. Set `"enableKubernetes": true` in `app/branding.json` to bring them back |
-| Build | [`build/cais/Dockerfile`](build/cais/Dockerfile) builds client and server inside Docker; no local Go needed |
+| Area         | Change                                                                                                                                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Identity     | Name, logo, favicons, page titles and footer come from [`app/branding.json`](app/branding.json); the UI shows the app name wherever upstream said "Portainer", and help links point to this repository |
+| i18n         | English and Brazilian Portuguese, with a language switcher in the user menu and on the login page                                                                                                      |
+| No upsell    | Upstream greys out paid "Business Feature" options as teasers. Cais hides every option it does not implement, so nothing on screen is locked                                                           |
+| Unlocked     | GitOps _Force redeployment_ and _Re-pull image_ (the server already implemented them; re-pull is now honoured and on by default)                                                                       |
+| Docker focus | Kubernetes and Azure ACI are not offered in the environment wizard or settings. Set `"enableKubernetes": true` in `app/branding.json` to bring them back                                               |
+| Build        | [`build/cais/Dockerfile`](build/cais/Dockerfile) builds client and server inside Docker; no local Go needed                                                                                            |
 
 Everything else (Docker, Swarm, Podman, Edge agents, stacks, GitOps, templates, registries, teams, OAuth/LDAP login, backups) is upstream Portainer CE.
 
@@ -31,16 +31,48 @@ The server is a single Go binary. Measured with Docker Desktop on Linux: ~20 MB 
 
 ## Run
 
-The image is published on Docker Hub as [`matheuslimams/cais`](https://hub.docker.com/r/matheuslimams/cais) (linux/amd64):
+The image is published on Docker Hub as [`matheuslimams/cais`](https://hub.docker.com/r/matheuslimams/cais):
 
 ```bash
-docker volume create cais_data
-docker run -d --name cais --restart unless-stopped   -p 9443:9443 -p 9000:9000   -v /var/run/docker.sock:/var/run/docker.sock   -v cais_data:/data   matheuslimams/cais:latest
+docker run -d --name cais --restart unless-stopped \
+  -p 9443:9443 -p 9000:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v cais_data:/data \
+  matheuslimams/cais:latest
 ```
 
 Or with Compose: `docker compose -f docker-compose.cais.yml up -d` (add `--build` to build from this checkout).
 
 Open https://SERVER:9443 (self-signed certificate) or http://SERVER:9000 and create the admin user within a few minutes of starting it. The setup token is printed in `docker logs cais`.
+
+### Behind a reverse proxy (recommended on a VPS)
+
+Cais controls the Docker socket, which is root access to the server, so expose it only through HTTPS.
+Publish the port on localhost only and let the proxy terminate TLS:
+
+```bash
+docker run -d --name cais --restart unless-stopped \
+  -p 127.0.0.1:9000:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v cais_data:/data \
+  matheuslimams/cais:latest
+```
+
+Caddy (`/etc/caddy/Caddyfile`), which also gets the certificate automatically:
+
+```
+cais.example.com {
+	reverse_proxy 127.0.0.1:9000
+}
+```
+
+Behind Cloudflare's proxy, use a single-level subdomain (`cais.example.com`, not `www.cais.example.com`):
+the free certificate only covers `*.example.com`.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and project rules, and [ROADMAP.md](ROADMAP.md) for what is
+still missing or locked (Kubernetes, Azure, Helm and the paid upstream features). Security issues: [SECURITY.md](SECURITY.md).
 
 ## Develop
 

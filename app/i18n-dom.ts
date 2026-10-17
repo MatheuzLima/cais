@@ -117,7 +117,7 @@ function translateTextNode(node: Text) {
 
   const translated = translateText(current);
   if (translated !== null && translated !== current) {
-    node.nodeValue = translated;
+    node.replaceData(0, node.length, translated);
   }
   written.set(node, node.nodeValue ?? '');
 }
@@ -154,7 +154,6 @@ function translateTree(root: Node) {
 
   const walker = document.createTreeWalker(
     root,
-    // eslint-disable-next-line no-bitwise
     NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT
   );
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {

@@ -1,0 +1,43 @@
+name: Sugerir melhoria
+description: Ideia de recurso novo ou de algo para desbloquear.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Confira antes o [ROADMAP.md](https://github.com/MatheuzLima/cais/blob/main/ROADMAP.md): muitos itens já estão mapeados lá.
+
+  - type: textarea
+    attributes:
+      label: Problema
+      description: Qual dificuldade você tem hoje sem esse recurso?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Proposta
+      description: Como você imagina a solução?
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Área
+      options:
+        - Containers / imagens / redes / volumes
+        - Stacks / GitOps
+        - Usuários, equipes e acesso
+        - Tradução
+        - Kubernetes / Helm / Azure
+        - Edge
+        - Instalação / desempenho
+        - Outra
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Contribuição
+      options:
+        - label: Tenho interesse em implementar isso e abrir um PR

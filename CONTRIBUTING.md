@@ -1,186 +1,96 @@
-# Contributing Guidelines
+# Contribuindo com o Cais
 
-Some basic conventions for contributing to this project.
+Obrigado pelo interesse! PRs em português ou inglês são bem-vindos.
+Não sabe por onde começar? Veja o [ROADMAP.md](ROADMAP.md): cada item diz onde mexer e o tamanho do esforço.
 
-## General
+## Fluxo
 
-Please make sure that there aren't existing pull requests attempting to address the issue mentioned. Likewise, please check for issues related to update, as someone else may be working on the issue in a branch or fork.
+1. Para mudanças maiores, abra antes uma [issue](https://github.com/MatheuzLima/cais/issues) para combinar a abordagem.
+2. Faça um fork e crie um branch a partir de `main`, no formato `<tipo>/<descricao-curta>`
+   (ex.: `feat/container-webhook`, `fix/123-traducao-login`).
+3. Abra o PR para `main`. A CI precisa passar e o mantenedor revisa (ver [`.github/CODEOWNERS`](.github/CODEOWNERS)).
 
-- Please open a discussion in a new issue / existing issue to talk about the changes you'd like to bring
-- Develop in a topic branch, not master/develop
+## Ambiente de desenvolvimento
 
-When creating a new branch, prefix it with the _type_ of the change (see **Commit Message Format** below), followed by a slash and a short kebab-case description:
+Requisitos: Node 22+, pnpm 10 (`corepack enable`), Docker. Go 1.26 só é necessário para rodar o backend fora do Docker.
 
-```
-<type>/<short-desc>
-```
-
-For example, a bugfix for the templates view could be `fix/template-selection`. If you are working from an existing issue, include its number: `fix/361-template-selection`.
-
-## Issues open to contribution
-
-Want to contribute but don't know where to start? Have a look at the issues labeled with the `good first issue` label: https://github.com/portainer/portainer/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22
-
-## Commit Message Format
-
-Each commit message should include a **type**, a **scope** and a **subject**:
-
-```
- <type>(<scope>): <subject>
+```bash
+pnpm install
+pnpm dev            # frontend em http://localhost:8999, com proxy de /api para :9000
 ```
 
-Lines should not exceed 72 characters. This allows the message to be easier to read on GitHub as well as in various git tools and produces a nice, neat commit log ie:
+Para ter a API em `:9000`, suba uma imagem do Cais (a publicada ou uma feita do seu branch):
 
-```
- #271 feat(containers): add exposed ports in the containers view
- #270 fix(templates): fix a display issue in the templates view
- #269 style(dashboard): update dashboard with new layout
-```
-
-### Type
-
-Should be one of the following:
-
-- **feat**: A new feature
-- **fix**: A bug fix
-- **docs**: Documentation only changes
-- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing
-  semi-colons, etc)
-- **refactor**: A code change that neither fixes a bug or adds a feature
-- **test**: Adding missing tests
-- **chore**: Changes to the build process or auxiliary tools and libraries such as documentation
-  generation
-
-### Scope
-
-The scope could be anything specifying place of the commit change. For example `networks`,
-`containers`, `images` etc...
-You can use the **area** label tag associated on the issue here (for `area/containers` use `containers` as a scope...)
-
-Prefer a single canonical scope per domain to avoid drift, e.g. `kubernetes` (not `k8s`/`kube`), `stacks` (not `stack`), `edgestacks` (not `edgestack`/`edge/stacks`).
-
-### Subject
-
-The subject contains succinct description of the change:
-
-- use the imperative, present tense: "change" not "changed" nor "changes"
-- don't capitalize first letter
-- no dot (.) at the end
-
-## Contribution process
-
-For security issues please refer to our [Security](SECURITY.md) policy.
-
-Bug reports and feature requests should start with a GitHub issue. PRs are welcome, but not all feature requests are accepted, so it pays to raise the issue first. We don't guarantee a response on every issue — if you'd rather not wait, open the PR and make the case in the description.
-
-## Build and run Portainer locally
-
-Ensure you have Docker, Node.js, pnpm, and Golang installed in the correct versions.
-
-Install dependencies:
-
-```sh
-$ make deps
+```bash
+docker build -f build/cais/Dockerfile -t cais:dev .
+docker run -d --name cais-dev -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock cais:dev
 ```
 
-Then build and run the project in a Docker container:
+## Antes de abrir o PR
 
-```sh
-$ make dev
+A CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) roda o mesmo que você pode rodar localmente:
+
+```bash
+pnpm typecheck
+pnpm exec eslint "./**/*.{js,jsx,ts,tsx}"
+pnpm test
+go vet ./api/... ./pkg/...
+go test ./api/... ./pkg/...
 ```
 
-Portainer server can now be accessed at <https://localhost:9443>. and UI dev server runs on <http://localhost:8999>.
+Formate o código com `pnpm format` (frontend) e `gofmt` (backend).
 
-if you want to build the project you can run:
+## Regras do projeto
 
-```sh
-make build-all
-```
+### Textos e tradução
 
-For additional make commands, run `make help`.
+- Todo texto novo da interface precisa de tradução em [`translations/pt-BR/translation.json`](translations/pt-BR/translation.json).
+  A chave é o próprio texto em inglês.
+- Textos inteiros escritos direto no JSX/HTML são traduzidos automaticamente na tela por [`app/i18n-dom.ts`](app/i18n-dom.ts);
+  basta adicioná-los ao dicionário. Frases com partes variáveis devem usar `t()` com interpolação.
+- `node scripts/i18n/extract-strings.mjs` lista o que ainda não tem tradução.
+- Detalhes em [README.md → Translating](README.md#translating).
 
-Find more detailed steps at <https://docs.portainer.io/contribute/build>.
+### Nome do produto
 
-### Build customization
+- Não escreva "Portainer" em textos da interface. Use `APP_NAME` de [`app/branding.ts`](app/branding.ts).
+- Nome, links e cor do projeto ficam em [`app/branding.json`](app/branding.json).
 
-You can customize the following settings:
+### Recursos do Business Edition
 
-- `PORTAINER_DATA`: The host dir or volume name used by portainer (default is `/tmp/portainer`, which won't persist over reboots).
-- `PORTAINER_PROJECT`: The root dir of the repository - `${portainerRoot}/dist/` is imported into the container to get the build artifacts and external tools (defaults to `your current dir`).
-- `PORTAINER_FLAGS`: a list of flags to be used on the portainer commandline, in the form `--admin-password=<pwd hash> --feat fdo=false --feat open-amt` (default: `""`).
+- O Cais não mostra iscas de recursos pagos: o que não está implementado fica oculto.
+- Para implementar um desses recursos, siga o passo a passo no [ROADMAP.md](ROADMAP.md#2-recursos-do-business-edition-não-existem-no-código-aberto).
 
-## Testing your build
+### Manter o merge com o upstream viável
 
-The `--log-level=DEBUG` flag can be passed to the Portainer container in order to provide additional debug output which may be useful when troubleshooting your builds. Please note that this flag was originally intended for internal use and as such the format, functionality and output may change between releases without warning.
+O código vem do Portainer CE e continua recebendo atualizações dele (`git fetch upstream`). Por isso:
 
-## Adding api docs
+- Prefira mudanças centralizadas (componentes compartilhados, flags, dicionário) a editar muitos arquivos.
+- Evite renomear arquivos, pacotes ou rotas herdados sem necessidade.
+- Código novo e exclusivo do Cais deve ficar em arquivos próprios sempre que possível.
 
-When adding a new resource (or a route handler), we should add a new tag to api/http/handler/handler.go#L136 like this:
-
-```
-// @tag.name <Name of resource>
-// @tag.description a short description
-```
-
-When adding a new route to an existing handler use the following as a template (you can use `swapi` snippet if you're using vscode):
+## Mensagens de commit
 
 ```
-// @id
-// @summary
-// @description
-// @description **Access policy**:
-// @tags
-// @security ApiKeyAuth
-// @security jwt
-// @accept json
-// @produce json
-// @param id path int true "identifier"
-// @param body body Object true "details"
-// @success 200 {object} portainer. "Success"
-// @success 204 "Success"
-// @failure 400 "Invalid request"
-// @failure 403 "Permission denied"
-// @failure 404 " not found"
-// @failure 500 "Server error"
-// @router /{id} [get]
+<tipo>(<escopo>): <resumo>
 ```
 
-explanation about each line can be found [here](https://github.com/swaggo/swag#api-operation)
+- **Tipos:** `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `i18n` (traduções).
+- **Escopo:** a área afetada, como `containers`, `stacks`, `auth`, `i18n` ou `build`.
+- O resumo vai no imperativo, com no máximo 72 caracteres por linha.
 
-After changing these annotations, regenerate the TypeScript API client and types — see [Generating API types](#generating-api-types) below.
-
-## Generating API types
-
-The frontend consumes a TypeScript API client (SDK functions and request/response types) generated from the Go API's Swagger annotations. Regenerate it after any API change — a new endpoint, a changed request/response shape, or a removed endpoint:
-
-```sh
-make generate-api
-```
-
-> **Always use `make generate-api`, not the bare `pnpm generate-api`.** The pnpm script runs `openapi-ts` _only_ — it reads the existing `api/docs/openapi.yaml` and never rebuilds it from the Go backend. If that spec is stale (for example, you pulled a branch that added an endpoint but didn't rebuild the docs), the generator silently drops the missing symbols, leaving the frontend referencing SDK functions and types that no longer exist (`export 'X' was not found in '@api/sdk.gen'`). `make generate-api` rebuilds the spec from current Go code first, so it can't go stale.
-
-### Pipeline
+Exemplos:
 
 ```
-Go Swagger annotations
-  → api/docs/swagger.yaml        (make docs-build, via swaggo/swag)
-  → api/docs/openapi.yaml        (swagger2openapi + validation)
-  → app/react/portainer/generated-api/portainer/   (hey-api/openapi-ts)
+feat(containers): add container webhooks
+fix(i18n): translate the registry form
+i18n(settings): review backup texts
 ```
 
-### Output
+## Código de conduta
 
-Generated files live in `app/react/portainer/generated-api/portainer/`. Do **not** edit them by hand — your changes will be overwritten on the next run. Import from the generated client instead of writing direct axios calls:
+Ao participar, você concorda com o [Código de Conduta](CODE_OF_CONDUCT.md).
 
-- `@api/sdk.gen` — SDK functions
-- `@api/types.gen` — request/response types
+## Licença
 
-### Configuration
-
-`openapi-ts.config.ts` controls the generator (output path, plugins, and tag filters). `deprecated` endpoints and `edge_agent`-tagged routes are excluded from generation.
-
-## Licensing
-
-See the [LICENSE](https://github.com/portainer/portainer/blob/develop/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
-
-We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.
+As contribuições são licenciadas sob a mesma licença do projeto (zlib, ver [LICENSE](LICENSE)).
