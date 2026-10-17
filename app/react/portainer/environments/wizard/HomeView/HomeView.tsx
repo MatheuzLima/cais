@@ -2,7 +2,7 @@ import { Wand2, Plug2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { EnvironmentType } from '@/react/portainer/environments/types';
-import { APP_NAME } from '@/branding';
+import { APP_NAME, REPOSITORY_URL } from '@/branding';
 import DockerIcon from '@/assets/ico/vendor/docker-icon.svg?c';
 import Kube from '@/assets/ico/kube.svg?c';
 
@@ -59,11 +59,11 @@ export function HomeView() {
                         'Please ensure your environment is correctly exposed. For help with installation visit'
                       )}{' '}
                       <a
-                        href="https://docs.portainer.io/start/intro"
+                        href={REPOSITORY_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        https://docs.portainer.io/start/intro
+                        {REPOSITORY_URL}
                       </a>
                     </p>
                   )}

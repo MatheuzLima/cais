@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useSystemStatus } from '@/react/portainer/system/useSystemStatus';
 import { useSystemVersion } from '@/react/portainer/system/useSystemVersion';
 import { useIsEdgeAdmin } from '@/react/hooks/useUser';
-import { APP_NAME, UPSTREAM_NAME } from '@/branding';
+import { APP_NAME } from '@/branding';
 
 import { Modal } from '@@/modals';
 import { Button } from '@@/buttons';
@@ -63,7 +63,6 @@ function BuildInfoModal({ closeModal }: { closeModal: () => void }) {
     return null;
   }
 
-  const { Edition } = statusQuery.data;
   const {
     ServerVersion,
     DatabaseVersion,
@@ -75,11 +74,7 @@ function BuildInfoModal({ closeModal }: { closeModal: () => void }) {
 
   return (
     <Modal onDismiss={closeModal} aria-label="build-info-modal">
-      <Modal.Header
-        title={`${APP_NAME} (${t('based on {{upstream}}', {
-          upstream: `${UPSTREAM_NAME} ${Edition}`,
-        })})`}
-      />
+      <Modal.Header title={APP_NAME} />
       <Modal.Body>
         <div className={styles.versionInfo}>
           <table>

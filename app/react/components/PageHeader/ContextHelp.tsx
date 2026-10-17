@@ -1,8 +1,7 @@
 import { HelpCircle } from 'lucide-react';
 import clsx from 'clsx';
-import { useCurrentStateAndParams } from '@uirouter/react';
 
-import { useSystemVersion } from '@/react/portainer/system/useSystemVersion';
+import { REPOSITORY_URL } from '@/branding';
 
 import headerStyles from './HeaderTitle.module.css';
 
@@ -31,34 +30,12 @@ export function ContextHelp() {
   );
 }
 
+/**
+ * Upstream links every page to its own documentation site. Cais points help
+ * links to the project repository instead; `doc` is kept so callers that
+ * reference a specific upstream page keep compiling.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function useDocsUrl(doc?: string): string {
-  const { state } = useCurrentStateAndParams();
-  const versionQuery = useSystemVersion();
-
-  if (!doc && !state) {
-    return '';
-  }
-
-  let url = 'https://docs.portainer.io/';
-
-  // Add LTS or STS version if we have it
-  if (versionQuery.data?.VersionSupport) {
-    url += versionQuery.data.VersionSupport.toLowerCase();
-  }
-
-  if (doc) {
-    return url + doc;
-  }
-
-  const { data } = state;
-  if (
-    data &&
-    typeof data === 'object' &&
-    'docs' in data &&
-    typeof data.docs === 'string'
-  ) {
-    return url + data.docs;
-  }
-
-  return url;
+  return REPOSITORY_URL;
 }

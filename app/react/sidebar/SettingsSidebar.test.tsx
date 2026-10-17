@@ -116,7 +116,7 @@ describe('SettingsSidebar', () => {
       expect(helpLink).toBeInTheDocument();
       expect(helpLink).toHaveAttribute(
         'href',
-        'https://github.com/portainer/portainer/issues'
+        'https://github.com/MatheuzLima/cais/issues'
       );
       expect(helpLink).toHaveAttribute('target', '_blank');
       expect(helpLink).toHaveAttribute('rel', 'noreferrer');

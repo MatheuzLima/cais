@@ -14,7 +14,7 @@ bilingual interface (English / Português do Brasil).
 
 | Area | Change |
 | ---- | ------ |
-| Identity | Name, logo, favicons, page titles and footer come from [`app/branding.json`](app/branding.json) |
+| Identity | Name, logo, favicons, page titles and footer come from [`app/branding.json`](app/branding.json); the UI shows the app name wherever upstream said "Portainer", and help links point to this repository |
 | i18n | English and Brazilian Portuguese, with a language switcher in the user menu and on the login page |
 | No upsell | Upstream greys out paid "Business Feature" options as teasers. Cais hides every option it does not implement, so nothing on screen is locked |
 | Unlocked | GitOps *Force redeployment* and *Re-pull image* (the server already implemented them; re-pull is now honoured and on by default) |
@@ -64,11 +64,26 @@ translated falls back to English and the UI can be translated incrementally.
 Add the translated string to [`translations/pt-BR/translation.json`](translations/pt-BR/translation.json).
 `translations/en/translation.json` stays empty unless an English string needs to differ from its key.
 
-Shared components already translate their string props, so these are covered by adding
-the string to the dictionary only: sidebar items and sections, page titles, breadcrumbs,
-datatable titles, string column headers, widget titles, details-table rows, form labels
-and sections, modal titles, toast notifications, search placeholders and the environment list. Adding a language means a new folder in `translations/` and an entry in
-`supportedLanguages` in [`app/i18n.ts`](app/i18n.ts).
+Most of the inherited UI writes English straight into JSX and AngularJS templates. Instead of
+wrapping every string, [`app/i18n-dom.ts`](app/i18n-dom.ts) watches the page and replaces any
+text node, `placeholder`, `title`, `aria-label` or `alt` whose whole content is a dictionary key.
+Keys may contain `__0__`, `__1__`... to match a variable part (`"Image: __0__": "Imagem: __0__"`).
+Code blocks, editors and terminals are left untouched. The same module replaces the word
+"Portainer" with the app name everywhere, including messages coming from the server.
+
+So for most strings, translating means adding the English text as it appears on screen to the
+dictionary. To list what is still missing:
+
+```bash
+node scripts/i18n/extract-strings.mjs > missing.json
+```
+
+Use `t()` for text built from several pieces (a sentence with a number in the middle, for
+example), since the DOM translator only matches whole text nodes.
+
+Kubernetes and Azure screens are skipped by the extractor while `enableKubernetes` is false.
+Adding a language means a new folder in `translations/` and an entry in `supportedLanguages`
+in [`app/i18n.ts`](app/i18n.ts).
 
 ## Branding
 

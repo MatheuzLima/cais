@@ -6,3 +6,6 @@ storybook-static
 **/*.test.ts
 **/*.test.tsx
 **/*.stories.tsx
+.pnpm-store
+**/node_modules
+.cais-dev-credentials

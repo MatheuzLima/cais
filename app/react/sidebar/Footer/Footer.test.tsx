@@ -9,12 +9,6 @@ import { SidebarProvider } from '../useSidebarState';
 
 import { Footer } from './Footer';
 
-vi.mock('./UpdateNotifications', () => ({
-  UpdateNotification: () => (
-    <div data-cy="update-notification">Update Notification</div>
-  ),
-}));
-
 vi.mock('./BuildInfoModal', () => ({
   BuildInfoModalButton: () => (
     <button data-cy="build-info-modal-button" type="button">
@@ -39,19 +33,10 @@ describe('Footer', () => {
       expect(screen.getByText('Cais')).toBeInTheDocument();
     });
 
-    test('should credit the upstream project it is based on', () => {
+    test('should not mention the upstream project', () => {
       renderComponent();
 
-      expect(screen.getByText('Based on')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'Portainer CE' })
-      ).toHaveAttribute('href', 'https://github.com/portainer/portainer');
-    });
-
-    test('should render UpdateNotification component', () => {
-      renderComponent();
-
-      expect(screen.getByTestId('update-notification')).toBeInTheDocument();
+      expect(screen.queryByText(/Portainer/)).not.toBeInTheDocument();
     });
 
     test('should render BuildInfoModalButton component', () => {
