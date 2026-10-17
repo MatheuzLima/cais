@@ -1,9 +1,11 @@
 services:
   cais:
+    # published image; `docker compose -f docker-compose.cais.yml up -d --build`
+    # builds it from this checkout instead
+    image: matheuslimams/cais:latest
     build:
       context: .
       dockerfile: build/cais/Dockerfile
-    image: cais:local
     container_name: cais
     restart: unless-stopped
     ports:

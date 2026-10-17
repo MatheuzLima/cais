@@ -31,11 +31,16 @@ The server is a single Go binary. Measured with Docker Desktop on Linux: ~20 MB 
 
 ## Run
 
+The image is published on Docker Hub as [`matheuslimams/cais`](https://hub.docker.com/r/matheuslimams/cais) (linux/amd64):
+
 ```bash
-docker compose -f docker-compose.cais.yml up -d --build
+docker volume create cais_data
+docker run -d --name cais --restart unless-stopped   -p 9443:9443 -p 9000:9000   -v /var/run/docker.sock:/var/run/docker.sock   -v cais_data:/data   matheuslimams/cais:latest
 ```
 
-Open https://localhost:9443 (self-signed certificate) or http://localhost:9000 and create the admin user.
+Or with Compose: `docker compose -f docker-compose.cais.yml up -d` (add `--build` to build from this checkout).
+
+Open https://SERVER:9443 (self-signed certificate) or http://SERVER:9000 and create the admin user within a few minutes of starting it. The setup token is printed in `docker logs cais`.
 
 ## Develop
 
